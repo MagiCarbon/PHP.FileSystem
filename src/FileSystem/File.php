@@ -15,7 +15,7 @@ class File implements FileInterface
      *
      * @return MC\FileSystem\File [description]
      */
-    public function __construct(string $path)
+    public function __construct($path)
     {
         $this->path = $path;
 
@@ -35,7 +35,7 @@ class File implements FileInterface
      *
      * @return MC\FileSystem\File [description]
      */
-    public function open(string $mode = 'r+')
+    public function open($mode = 'r+')
     {
         $this->handle = fopen($this->path, $mode);
 
@@ -52,7 +52,7 @@ class File implements FileInterface
     }
 
     //lock with block
-    public function lock(bool $block = false)
+    public function lock($block = false)
     {
         if ($block) {
             $this->locked = flock($this->handle, LOCK_EX);
@@ -103,7 +103,7 @@ class File implements FileInterface
     }
 
     // call lock(true)
-    public function lockForUpdate(string $content = null, int $length = null)
+    public function lockForUpdate($content = null, $length = null)
     {
         $this->lockWithBlock();
         if (!is_null($content)) {
@@ -121,14 +121,16 @@ class File implements FileInterface
      */
     public function content()
     {
+        flock($this->handle, LOCK_SH);
         $contents = '';
         while (! feof($this->handle)) {
             $contents .= fread($this->handle, 1048576);
         }
+        flock($this->handle, LOCK_UN);
         return $contents;
     }
 
-    public function update(string $content, int $length = null)
+    public function update($content, $length = null)
     {
         rewind($this->handle);
         ftruncate($this->handle, 0);
@@ -136,7 +138,7 @@ class File implements FileInterface
         return $this->write($content, $length);
     }
 
-    public function append(string $content, int $length = null)
+    public function append($content, $length = null)
     {
         fseek($this->handle, 0, SEEK_END);
 
@@ -151,7 +153,7 @@ class File implements FileInterface
      *
      * @return mixed returns the number of bytes written, or FALSE on error.
      */
-    private function write(string $content, int $length = null)
+    private function write($content, $length = null)
     {
         if (!is_null($length)) {
             return fwrite($this->handle, $content, $length);
