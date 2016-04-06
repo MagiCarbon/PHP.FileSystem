@@ -1,0 +1,20 @@
+{
+    "name": "mc/filesystem",
+    "description": "",
+    "keywords": [],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "MC",
+            "email": "MagiCarbon@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "MC\\": "src/"
+        },
+        "files": []
+    }
+
+}
